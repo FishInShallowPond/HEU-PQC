@@ -1,0 +1,26 @@
+test_enable_alarm_stops_before_configuration (test_core.ProtocolTests.test_enable_alarm_stops_before_configuration) ... ok
+test_failing_initialization_closes_both_transports (test_core.ProtocolTests.test_failing_initialization_closes_both_transports) ... ok
+test_normal_order_is_whole_field_reverse (test_core.ProtocolTests.test_normal_order_is_whole_field_reverse) ... ok
+test_short_public_key_is_rejected_without_padding (test_core.ProtocolTests.test_short_public_key_is_rejected_without_padding) ... ok
+test_unknown_verify_status_is_recorded_as_protocol_error (test_core.ProtocolTests.test_unknown_verify_status_is_recorded_as_protocol_error) ... ok
+test_wrong_header_truncation_and_extra_decaps_data_rejected (test_core.ProtocolTests.test_wrong_header_truncation_and_extra_decaps_data_rejected) ... ok
+test_bad_ack_and_chip_alarm_retained_in_failed_trace (test_core.SerialTests.test_bad_ack_and_chip_alarm_retained_in_failed_trace) ... ok
+test_both_workflows_through_serial_transport_with_fragmented_emulated_ports (test_core.SerialTests.test_both_workflows_through_serial_transport_with_fragmented_emulated_ports) ... ok
+test_fragmented_response_and_zero_length_ack (test_core.SerialTests.test_fragmented_response_and_zero_length_ack) ... ok
+test_oversized_length_rejected_before_payload_read (test_core.SerialTests.test_oversized_length_rejected_before_payload_read) ... ok
+test_partial_serial_write_is_failure (test_core.SerialTests.test_partial_serial_write_is_failure) ... ok
+test_residual_input_is_preserved_before_sending (test_core.SerialTests.test_residual_input_is_preserved_before_sending) ... ok
+test_stalled_send_queue_obeys_command_deadline (test_core.SerialTests.test_stalled_send_queue_obeys_command_deadline) ... ok
+test_trailing_alarm_is_preserved_and_rejected (test_core.SerialTests.test_trailing_alarm_is_preserved_and_rejected) ... ok
+test_truncated_payload_times_out_and_retains_partial_rx (test_core.SerialTests.test_truncated_payload_times_out_and_retains_partial_rx) ... ok
+test_all_algorithms_complete_and_transfer_exact_bytes (test_core.TwoChipTests.test_all_algorithms_complete_and_transfer_exact_bytes) ... ok
+test_export_contains_full_fields_and_raw_traces (test_core.TwoChipTests.test_export_contains_full_fields_and_raw_traces) ... ok
+test_k_mismatch_is_not_rewritten (test_core.TwoChipTests.test_k_mismatch_is_not_rewritten) ... ok
+test_same_port_and_invalid_signature_message_rejected_before_connect (test_core.TwoChipTests.test_same_port_and_invalid_signature_message_rejected_before_connect) ... ok
+test_stop_leaves_next_step_resumable (test_core.TwoChipTests.test_stop_leaves_next_step_resumable) ... ok
+test_verify_rejection_is_not_rewritten (test_core.TwoChipTests.test_verify_rejection_is_not_rewritten) ... ok
+
+----------------------------------------------------------------------
+Ran 21 tests in 0.881s
+
+OK

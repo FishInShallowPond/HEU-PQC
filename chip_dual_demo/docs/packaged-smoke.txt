@@ -1,0 +1,1 @@
+Final packaged EXE: independent TEMP working directory, smoke exit 0
