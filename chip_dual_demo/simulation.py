@@ -26,6 +26,10 @@ class SimulatedTransport:
     def close(self):
         self.closed = True
 
+    def configure_profile(self, profile):
+        """Model a successful firmware profile switch in explicit simulation only."""
+        self.profile = profile
+
     def exchange(self, command, **kwargs):
         if self.closed:
             raise RuntimeError('模拟连接已关闭')

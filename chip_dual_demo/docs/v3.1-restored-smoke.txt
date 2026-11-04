@@ -1,0 +1,13 @@
+CWD=C:\Users\Lenovo\AppData\Local\Temp\LC01_v31_exact_nratetn3
+EXE=C:\Users\Lenovo\AppData\Local\Temp\LC01_v31_exact_nratetn3\LC01_DualChip_Demo_v3.1.exe
+SHA256=5C6D3ACC85A1E6E33791E4A982F18A072B4CB656A1A195B71ACC3B0A617BCA05
+HISTORICAL_SHA256_MATCH=True
+MARKERS:
+SMOKE PASS: kem / kyber512 / fields=5 / steps=6
+SMOKE PASS: signature / dilithium2 / fields=5 / steps=5
+SMOKE PASS: tamper kem / editor apply-and-continue / actual failed result / complete workflow / exact byte highlights
+SMOKE PASS: tamper signature / editor apply-and-continue / actual failed result / complete workflow / exact byte highlights
+SMOKE PASS: same-window / chip1 signs + chip2 verifies / fresh KEM / no direct K compare / rekey / text AEAD / failure audit
+SMOKE PASS: real Tk events, original/received fields, tamper continuation and session cleanup
+STDERR_BYTES=0
+EXIT_CODE=0

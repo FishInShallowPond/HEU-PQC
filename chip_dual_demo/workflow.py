@@ -69,9 +69,12 @@ class DemoSession:
         self.edit_history = []
         self.waiting_for_transfer = None
         self._operation_lock = threading.Lock()
+        self._text_lock = threading.RLock()
         self.trace = []
         self.logs = []
         self.result = None
+        self.text_exchange = None
+        self.text_exchanges = []
         self.next_step = 0
         self.clients = []
         self._transports = []
@@ -302,6 +305,33 @@ class DemoSession:
     def stop(self):
         self._stopped.set()
 
+    def open_text_exchange(self, reset=False):
+        """Create separate A/B software endpoints from their actual local K values."""
+        if not self._operation_lock.acquire(blocking=False):
+            raise RuntimeError('正在执行芯片操作，请等待当前步骤结束')
+        try:
+            with self._text_lock:
+                if (self._closed or self._failed or self.profile.family != 'kem'
+                        or self.next_step != len(self.steps) or self.result is None):
+                    raise RuntimeError('文本加密需要已完成且未断开的KEM流程')
+                if self.text_exchange is not None and not reset:
+                    return self.text_exchange
+                from text_crypto import TextExchange, transcript_hash
+                # Endpoint-specific observations: never copy K1 into endpoint B.
+                transcript_a = transcript_hash(self.profile.key, self.fields['pk'], self.fields['received_ct'])
+                transcript_b = transcript_hash(self.profile.key, self.fields['received_pk'], self.fields['ct'])
+                replacement = TextExchange(self.fields['k1'], self.fields['k2'], transcript_a,
+                                           transcript_b, simulate=self.config.simulate)
+                if self.text_exchange is not None:
+                    self.text_exchange.close()
+                    self.text_exchanges.append(self.text_exchange.export_data())
+                self.text_exchange = replacement
+                self._log('新建本机文本会话：HKDF-SHA-256 / AES-256-GCM；双向密钥确认' +
+                          ('通过' if replacement.ready else '失败') + '；未进行设备身份认证')
+                return replacement
+        finally:
+            self._operation_lock.release()
+
     def _disconnect(self):
         for transport in self._transports:
             try:
@@ -311,8 +341,11 @@ class DemoSession:
 
     def close(self):
         self._stopped.set()
+        with self._text_lock:
+            self._closed = True
+            if self.text_exchange is not None:
+                self.text_exchange.close()
         self._disconnect()
-        self._closed = True
 
     def export(self, directory):
         destination = Path(directory) / datetime.now(CHINA_TIME).strftime('%Y%m%d_%H%M%S_%f')
@@ -334,6 +367,10 @@ class DemoSession:
                                                                'tx_command_hex': '', 'attempted_command_hex': ''})}
         comparisons = {f'{left}:{right}': diff_offsets(self.fields[left], self.fields[right])
                        for left, right in COMPARISON_PAIRS if left in self.fields and right in self.fields}
+        with self._text_lock:
+            text_sessions = list(self.text_exchanges)
+            if self.text_exchange is not None:
+                text_sessions.append(self.text_exchange.export_data())
         result = {'started_at': self.started_at, 'mode': 'simulation' if self.config.simulate else 'hardware',
                   'simulation_notice': 'Protocol preview only; not a PQC implementation' if self.config.simulate else '',
                   'config': config, 'result': self.result, 'completed_steps': self.next_step,
@@ -342,9 +379,11 @@ class DemoSession:
                   'fields_hex': {key: value.hex().upper() for key, value in self.fields.items()},
                   'transfers': transfers, 'comparisons': comparisons, 'edit_history': self.edit_history,
                   'waiting_for_transfer': self.waiting_for_transfer,
+                  'text_session_count': len(text_sessions),
                   'tampered': any(self.fields[name] != value for name, value in self._sent.items())}
         (destination / 'result.json').write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
         (destination / 'command_trace.json').write_text(json.dumps(self.trace, ensure_ascii=False, indent=2), encoding='utf-8')
+        (destination / 'text_sessions.json').write_text(json.dumps(text_sessions, ensure_ascii=False, indent=2), encoding='utf-8')
         (destination / 'session.log').write_text('\n'.join(self.logs) + '\n', encoding='utf-8')
         fields = ['流程模拟 / 非密码算法验证' if self.config.simulate else '真实双芯片硬件记录',
                   '字段均为正常字节序HEX；原始串口数据见command_trace.json。',

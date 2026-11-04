@@ -1,0 +1,104 @@
+{
+  "status": "throwaway feasibility microbenchmark; not an implemented secure communication endpoint",
+  "date": "2026-11-04 Asia/Shanghai",
+  "backend": "Windows system BCrypt AES-256-GCM; provider internal implementation unspecified",
+  "compiler": "gcc.exe (Rev14, Built by MSYS2 project) 15.2.0",
+  "compile_flags": "-std=c99 -O2 -Wall -Wextra -Werror -fstack-usage -DBLOCK_BYTES=<1024|4096|16384> -lbcrypt",
+  "source_path_temporary": "C:\\Users\\Lenovo\\AppData\\Local\\Temp\\lc01_c_probe_7239b038f87a4deb8debd3396387af9d\\probe.c",
+  "source_sha256": "10745D7147253CF9E7980C8637D9C06DD6B663C7D9FE21130522DC5BF1AEC7B9",
+  "source_retained_as_product_code": false,
+  "test_method": "Known AES256-GCM zero-key/zero-IV/16B-zero-plaintext result cross-checked with Python cryptography; initial primitive stub failed known-answer test; then native implementation passed. Real benchmark uses separate random key and random 4B prefix; monotonic 64-bit sequence across warmup and five trials; each record includes 16B AAD and 16B tag.",
+  "correctness": "known result; successful decrypt byte comparison; tag/AAD/ciphertext modification and truncation rejected; failed output cleared before return",
+  "workload": "Reuse three static arrays; 16MiB synthesized repeating data per trial, one warmup and five timed trials; time includes encrypt+decrypt+memcmp and nonce/AAD preparation. No real file I/O, network, app frame parsing, GUI, HKDF or chip operations. Hot-cache desktop microbenchmark; not representative of end-to-end performance.",
+  "memory_scope": "Payload arrays and key-object storage known; key-object storage 4096B, provider requirement 3262B on this host. No explicit allocation in probe. Provider, runtime, OS internal allocations and API stack usage not measured. PE sections are not MCU Flash/RAM budgets.",
+  "energy_measured": false,
+  "mcu_measured": false,
+  "lc01_measured": false,
+  "network_measured": false,
+  "rows": [
+    {
+      "backend": "Windows CNG AES-256-GCM",
+      "block_bytes": 1024,
+      "stream_bytes_per_trial": 16777216,
+      "payload_buffers_bytes": 3072,
+      "key_object_storage_bytes": 4096,
+      "provider_required_key_object_bytes": 3262,
+      "known_answer_passed": true,
+      "roundtrip_passed": true,
+      "tamper_tests_passed": true,
+      "warmup_seconds": 0.01114,
+      "encrypt_decrypt_compare_seconds": [
+        0.0116536,
+        0.0108323,
+        0.0095017,
+        0.0091803,
+        0.0099211
+      ],
+      "median_encrypt_decrypt_compare_ms": 9.921100000000001,
+      "executable_file_bytes": 146531,
+      "windows_pe_sections": {
+        "text": 18700,
+        "data": 176,
+        "bss": 7616
+      },
+      "gcc_stack_usage_report": "probe.c:24:12:crypt_record\t224\tstatic\nprobe.c:87:12:initialize_key\t112\tstatic\nprobe.c:102:12:run_trial\t224\tstatic\nprobe.c:125:5:main\t352\tstatic\n",
+      "exit_code": 0
+    },
+    {
+      "backend": "Windows CNG AES-256-GCM",
+      "block_bytes": 4096,
+      "stream_bytes_per_trial": 16777216,
+      "payload_buffers_bytes": 12288,
+      "key_object_storage_bytes": 4096,
+      "provider_required_key_object_bytes": 3262,
+      "known_answer_passed": true,
+      "roundtrip_passed": true,
+      "tamper_tests_passed": true,
+      "warmup_seconds": 0.0059213,
+      "encrypt_decrypt_compare_seconds": [
+        0.0067341,
+        0.0071477,
+        0.0071891,
+        0.0074128,
+        0.007188
+      ],
+      "median_encrypt_decrypt_compare_ms": 7.188,
+      "executable_file_bytes": 147043,
+      "windows_pe_sections": {
+        "text": 18828,
+        "data": 176,
+        "bss": 16832
+      },
+      "gcc_stack_usage_report": "probe.c:24:12:crypt_record\t224\tstatic\nprobe.c:87:12:initialize_key\t112\tstatic\nprobe.c:102:12:run_trial\t224\tstatic\nprobe.c:125:5:main\t416\tstatic\n",
+      "exit_code": 0
+    },
+    {
+      "backend": "Windows CNG AES-256-GCM",
+      "block_bytes": 16384,
+      "stream_bytes_per_trial": 16777216,
+      "payload_buffers_bytes": 49152,
+      "key_object_storage_bytes": 4096,
+      "provider_required_key_object_bytes": 3262,
+      "known_answer_passed": true,
+      "roundtrip_passed": true,
+      "tamper_tests_passed": true,
+      "warmup_seconds": 0.0049258,
+      "encrypt_decrypt_compare_seconds": [
+        0.0052461,
+        0.0062228,
+        0.0080459,
+        0.0058014,
+        0.0057595
+      ],
+      "median_encrypt_decrypt_compare_ms": 5.8014,
+      "executable_file_bytes": 147043,
+      "windows_pe_sections": {
+        "text": 18828,
+        "data": 176,
+        "bss": 53696
+      },
+      "gcc_stack_usage_report": "probe.c:24:12:crypt_record\t224\tstatic\nprobe.c:87:12:initialize_key\t112\tstatic\nprobe.c:102:12:run_trial\t224\tstatic\nprobe.c:125:5:main\t416\tstatic\n",
+      "exit_code": 0
+    }
+  ]
+}

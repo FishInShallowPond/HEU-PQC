@@ -1,5 +1,7 @@
 # v2故障演示交付验证 — 2026-11-03
 
+本文保留为v2历史验证记录。v3新增双向文本认证加密的当前结果见[verification-v3.md](verification-v3.md)。
+
 - `python -m unittest discover -s tests -v`：34/34通过；完整输出见 `test-results-v2.txt`，无Tk析构线程错误。
 - `python main.py --smoke-test`：真实Tk控件和事件队列，正常KEM、正常签名、密文篡改、签名篡改共四条流程均通过；见 `gui-smoke-v2.log`。
 - 全部13个算法配置及所有字段线长度与原 `HEU_py_acvp_pqc_main_v1/config.py` 比对一致。

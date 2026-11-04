@@ -9,6 +9,7 @@ from pathlib import Path
 from tkinter import filedialog, ttk
 
 from profiles import PROFILES
+from ui_widgets import TickCheckbutton
 from workflow import COMPARISON_PAIRS, DemoConfig, DemoSession, diff_offsets
 
 
@@ -47,6 +48,8 @@ class DemoApp:
         self.copy_buttons = {}
         self.field_tabs = {}
         self.transfer_editor = None
+        self.communication_panel = None
+        self._current_mode = 'demo'
         self.pause_message = ''
         self.tampered = False
         self.result = None
@@ -87,7 +90,7 @@ class DemoApp:
         self._poll_id = self.root.after(25, self._poll)
 
     def _style(self):
-        self.root.title('LC01 双芯片算法演示')
+        self.root.title('LC01 双芯片密码通信演示')
         left = max(0, (self.root.winfo_screenwidth() - 1320) // 2)
         top = max(0, (self.root.winfo_screenheight() - 940) // 2)
         self.root.geometry(f'1320x900+{left}+{top}')
@@ -120,7 +123,30 @@ class DemoApp:
         style.configure('Horizontal.TProgressbar', background=ACCENT, troughcolor='#E0E8ED')
 
     def _build(self):
-        outer = ttk.Frame(self.root, padding=(20, 15, 20, 12))
+        self.mode_shell = ttk.Frame(self.root, padding=(8, 7, 8, 0))
+        self.mode_shell.pack(fill='both', expand=True)
+        self.mode_bar = tk.Frame(self.mode_shell, background=BG)
+        self.mode_bar.pack(fill='x', pady=(0, 5))
+        self.demo_mode_button = tk.Button(
+            self.mode_bar, text='算法演示', width=18, height=1, relief='flat', bd=0,
+            font=('Microsoft YaHei UI', 10, 'bold'), padx=10, pady=7,
+            command=lambda: self.select_mode('demo'))
+        self.demo_mode_button.pack(side='left', padx=(0, 6))
+        self.communication_mode_button = tk.Button(
+            self.mode_bar, text='文本加密通信', width=18, height=1, relief='flat', bd=0,
+            font=('Microsoft YaHei UI', 10, 'bold'), padx=10, pady=7,
+            command=lambda: self.select_mode('communication'))
+        self.communication_mode_button.pack(side='left')
+        self.page_stack = ttk.Frame(self.mode_shell)
+        self.page_stack.pack(fill='both', expand=True)
+        self.page_stack.rowconfigure(0, weight=1)
+        self.page_stack.columnconfigure(0, weight=1)
+        self.demo_page = ttk.Frame(self.page_stack)
+        self.communication_page = ttk.Frame(self.page_stack)
+        self.demo_page.grid(row=0, column=0, sticky='nsew')
+        self.communication_page.grid(row=0, column=0, sticky='nsew')
+        self.communication_page.grid_remove()
+        outer = ttk.Frame(self.demo_page, padding=(20, 15, 20, 12))
         outer.pack(fill='both', expand=True)
         top = ttk.Frame(outer)
         top.pack(fill='x', pady=(0, 12))
@@ -141,12 +167,14 @@ class DemoApp:
         self._setting(settings, '命令超时 / 秒', self.timeout_var, 4, width=10)
         mode_row = ttk.Frame(outer)
         mode_row.pack(fill='x', pady=(8, 4))
-        self.simulate_check = ttk.Checkbutton(mode_row, text='流程模拟（无硬件）',
-                                             variable=self.simulate_var, command=self._mode_changed)
+        self.simulate_check = TickCheckbutton(
+            mode_row, text='流程模拟（无硬件）', variable=self.simulate_var,
+            command=self._mode_changed, background=BG)
         self.simulate_check.pack(side='left')
         self._config_widgets.append((self.simulate_check, 'normal'))
-        self.pause_transfer_check = ttk.Checkbutton(mode_row, text='发送前暂停 / 篡改演示',
-                                                     variable=self.pause_transfer_var)
+        self.pause_transfer_check = TickCheckbutton(
+            mode_row, text='发送前暂停 / 篡改演示', variable=self.pause_transfer_var,
+            background=BG)
         self.pause_transfer_check.pack(side='left', padx=(12, 0))
         self._config_widgets.append((self.pause_transfer_check, 'normal'))
         self.refresh_button = ttk.Button(mode_row, text='刷新串口', command=self.refresh_ports)
@@ -265,6 +293,10 @@ class DemoApp:
         self.log_widget.tag_configure('error', foreground=RED)
         self.log_widget.bind('<Control-a>', self._select_all)
         self.vertical_panes.add(logs, weight=1)
+        from communication_panel import CommunicationPanel
+        self.communication_panel = CommunicationPanel(self, self.communication_page)
+        self.communication_panel.pack(fill='both', expand=True)
+        self._render_mode_buttons()
 
     def _setting(self, parent, label, variable, column, values=None, width=12, readonly=False):
         frame = ttk.Frame(parent, padding=(0, 0, 10 if column < 4 else 0, 0))
@@ -278,6 +310,48 @@ class DemoApp:
         widget.pack(fill='x')
         self._config_widgets.append((widget, 'readonly' if readonly else 'normal'))
         return widget
+
+    def select_mode(self, mode):
+        """Switch main-window modes and release the other mode's idle session."""
+        if mode not in ('demo', 'communication'):
+            raise ValueError('未知主窗口模式')
+        target = self.communication_page if mode == 'communication' else self.demo_page
+        if self._current_mode == mode and target.winfo_manager():
+            return True
+        if self.closing:
+            return False
+        panel = self.communication_panel
+        if mode == 'communication':
+            if self.busy or (panel is not None and panel.busy):
+                return False
+            if self.session is not None:
+                self.disconnect()
+        else:
+            if panel is not None and panel.busy:
+                return False
+            if panel is not None and panel.session is not None:
+                panel.disconnect()
+        self._current_mode = mode
+        if mode == 'communication':
+            self.demo_page.grid_remove()
+            self.communication_page.grid()
+        else:
+            self.communication_page.grid_remove()
+            self.demo_page.grid()
+        self._render_mode_buttons()
+        self._update_controls()
+        if mode == 'communication' and self.communication_panel is not None:
+            self.communication_panel.on_shown()
+        return True
+
+    def _render_mode_buttons(self):
+        active = {'background': ACCENT, 'foreground': 'white',
+                  'activebackground': '#0C485D', 'activeforeground': 'white'}
+        inactive = {'background': '#E1E9EE', 'foreground': INK,
+                    'activebackground': '#D2DFE6', 'activeforeground': INK}
+        self.demo_mode_button.configure(**(active if self._current_mode == 'demo' else inactive))
+        self.communication_mode_button.configure(
+            **(active if self._current_mode == 'communication' else inactive))
 
     def _field_tab(self, notebook, name):
         frame = ttk.Frame(notebook, style='White.TFrame', padding=8)
@@ -419,16 +493,20 @@ class DemoApp:
 
     def _update_controls(self):
         editor_open = self.transfer_editor is not None
-        locked = self.busy or self.session is not None or self.closing or editor_open
+        panel_busy = self.communication_panel is not None and self.communication_panel.busy
+        panel_session = (self.communication_panel is not None
+                         and self.communication_panel.session is not None
+                         and not self.communication_panel.session.closed)
+        locked = self.busy or self.session is not None or self.closing or editor_open or panel_busy
         for widget, state in self._config_widgets:
             widget.configure(state='disabled' if locked else state)
         self.message_input.configure(state='disabled' if locked else 'normal')
         self.refresh_button.configure(state='disabled' if locked else 'normal')
         complete = self.result is not None
         states = {
-            'connect': not self.busy and self.session is None,
-            'step': not self.busy and not self._failed and not complete,
-            'run': not self.busy and not self._failed and not complete,
+            'connect': not self.busy and not panel_busy and not panel_session and self.session is None,
+            'step': not self.busy and not panel_busy and not panel_session and not self._failed and not complete,
+            'run': not self.busy and not panel_busy and not panel_session and not self._failed and not complete,
             'stop': self.busy and self._job_kind in ('connect', 'step', 'run') and not self._stop_requested.is_set(),
             'disconnect': not self.busy and self.session is not None,
             'export': not self.busy and self.session is not None,
@@ -438,6 +516,8 @@ class DemoApp:
             button.configure(state='normal' if states[key] and not self.closing and not editor_open else 'disabled')
         for name, button in self.copy_buttons.items():
             button.configure(state='normal' if name in self.fields and not self.closing else 'disabled')
+        if self.communication_panel is not None:
+            self.communication_panel.refresh_controls()
 
     def _reset_display(self):
         self.fields.clear()
@@ -498,7 +578,12 @@ class DemoApp:
             self._launch('disconnect')
 
     def _launch(self, kind, directory=None):
-        if self.busy or self.transfer_editor is not None or (self.closing and kind != 'disconnect'):
+        if (self.busy or self.transfer_editor is not None
+                or (self.communication_panel is not None and self.communication_panel.busy)
+                or (self.communication_panel is not None
+                    and self.communication_panel.session is not None
+                    and not self.communication_panel.session.closed)
+                or (self.closing and kind != 'disconnect')):
             return
         if kind in ('step', 'run') and (self._failed or self.result is not None):
             return
@@ -579,19 +664,35 @@ class DemoApp:
         self.stop()
         self.status_var.set('正在关闭 · 等待当前步骤结束并释放串口，请稍候…')
         self._update_controls()
+        if self.communication_panel is not None:
+            self.communication_panel.close()
         if not self.busy:
             if self.session is not None:
                 self._launch('disconnect')
             else:
-                self._destroy()
+                self._maybe_destroy()
 
     def _destroy(self):
         if self.destroyed:
             return
+        if self.busy or self.session is not None:
+            return
+        if self.communication_panel is not None and not self.communication_panel.shutdown_complete:
+            return
         self.destroyed = True
         if self._poll_id is not None:
             self.root.after_cancel(self._poll_id)
+            self._poll_id = None
         self.root.destroy()
+
+    def _maybe_destroy(self):
+        if not self.closing or self.destroyed:
+            return
+        if self.busy or self.session is not None:
+            return
+        if self.communication_panel is not None and not self.communication_panel.shutdown_complete:
+            return
+        self._destroy()
 
     def _poll(self):
         self._poll_id = None
@@ -607,6 +708,8 @@ class DemoApp:
             self._finish(outcome)
         if not self.destroyed:
             self._poll_id = self.root.after(25, self._poll)
+        elif self.closing:
+            self._maybe_destroy()
 
     def _handle(self, event):
         kind = event.get('type')
@@ -699,11 +802,11 @@ class DemoApp:
                 # If close itself failed, release the GUI reference and still finish shutdown.
                 if kind == 'disconnect':
                     self.session = None
-                    self._destroy()
+                    self._maybe_destroy()
                 else:
                     self._launch('disconnect')
             else:
-                self._destroy()
+                self._maybe_destroy()
 
     def _set_field(self, name, data):
         data = bytes(data)

@@ -1,0 +1,86 @@
+1682 INFO: PyInstaller: 6.22.2, contrib hooks: 2026.7
+1683 INFO: Python: 3.13.9 (conda)
+1713 INFO: Platform: Windows-11-10.0.26200-SP0
+1713 INFO: Python environment: D:\Config Files\Anaconda3
+1715 INFO: wrote build\LC01_DualChip_Demo_v3.spec
+1725 INFO: Module search paths (PYTHONPATH):
+['F:\\001_Doing\\HEU-PQC\\chip_dual_demo',
+ 'D:\\Config Files\\Anaconda3\\python313.zip',
+ 'D:\\Config Files\\Anaconda3\\DLLs',
+ 'D:\\Config Files\\Anaconda3\\Lib',
+ 'D:\\Config Files\\Anaconda3',
+ 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages',
+ 'D:\\Config Files\\Anaconda3\\Lib\\site-packages',
+ 'D:\\Config Files\\Anaconda3\\Lib\\site-packages\\win32',
+ 'D:\\Config Files\\Anaconda3\\Lib\\site-packages\\win32\\lib',
+ 'D:\\Config Files\\Anaconda3\\Lib\\site-packages\\Pythonwin',
+ 'F:\\001_Doing\\HEU-PQC\\chip_dual_demo']
+3837 INFO: checking Analysis
+3851 INFO: Building because excludes changed
+3851 INFO: Looking for Python shared library...
+3851 INFO: Using Python shared library: D:\Config Files\Anaconda3\python313.dll
+3851 INFO: Running Analysis Analysis-00.toc
+3851 INFO: Target bytecode optimization level: 0
+3851 INFO: Initializing module dependency graph...
+3853 INFO: Initializing module graph hook caches...
+3891 INFO: Analyzing modules for base_library.zip ...
+10094 INFO: Processing standard module hook 'hook-math.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+10108 INFO: Processing standard module hook 'hook-heapq.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+10208 INFO: Processing standard module hook 'hook-encodings.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+13441 INFO: Processing standard module hook 'hook-pickle.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+14870 INFO: Caching module dependency graph...
+14961 INFO: Analyzing F:\001_Doing\HEU-PQC\chip_dual_demo\main.py
+14976 INFO: Processing standard module hook 'hook-PIL.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+15087 INFO: Processing standard module hook 'hook-PIL.Image.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+16965 INFO: Processing standard module hook 'hook-xml.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+16970 INFO: Processing standard module hook 'hook-xml.etree.cElementTree.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+17052 INFO: Processing standard module hook 'hook-xml.dom.domreg.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+18094 INFO: Processing standard module hook 'hook-platform.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+18138 INFO: Processing standard module hook 'hook-_ctypes.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+18162 INFO: Processing standard module hook 'hook-sysconfig.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+18210 INFO: Processing standard module hook 'hook-webbrowser.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+18425 INFO: Processing standard module hook 'hook-PIL.ImageFilter.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+18656 INFO: Processing pre-find-module-path hook 'hook-tkinter.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\pre_find_module_path'
+18660 INFO: TclTkInfo: initializing cached Tcl/Tk info...
+19404 INFO: Processing standard module hook 'hook-_tkinter.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+19553 INFO: Processing standard module hook 'hook-workflow.py' from 'F:\\001_Doing\\HEU-PQC\\chip_dual_demo\\packaging_hooks'
+19686 INFO: Processing standard module hook 'hook-cryptography.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\_pyinstaller_hooks_contrib\\stdhooks'
+24428 INFO: hook-cryptography: cryptography uses dynamically-linked OpenSSL: 'C:\\Program Files\\WindowsApps\\OpenAI.CodexPrimaryRuntime.v26-1026-487-0_26.1026.487.0_x64__3k8sg7r9htsxt\\dependencies\\native\\poppler\\Library\\bin\\libssl-3-x64.dll'
+24539 INFO: Processing module hooks (post-graph stage)...
+24863 INFO: Processing standard module hook 'hook-PIL.SpiderImagePlugin.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+24904 INFO: Processing standard module hook 'hook-_tkinter.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks'
+24914 INFO: Performing binary vs. data reclassification (936 entries)
+25061 INFO: Looking for ctypes DLLs
+25086 WARNING: Ignoring /System/Library/Frameworks/CoreFoundation.framework/CoreFoundation imported from C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\serial\tools\list_ports_osx.py - only basenames are supported with ctypes imports!
+25086 WARNING: Ignoring /System/Library/Frameworks/IOKit.framework/IOKit imported from C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\serial\tools\list_ports_osx.py - only basenames are supported with ctypes imports!
+25089 INFO: Analyzing run-time hooks ...
+25091 INFO: Including run-time hook 'pyi_rth_inspect.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\rthooks'
+25094 INFO: Including run-time hook 'pyi_rth_cryptography_openssl.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\_pyinstaller_hooks_contrib\\rthooks'
+25095 INFO: Including run-time hook 'pyi_rth__tkinter.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\rthooks'
+25097 INFO: Including run-time hook 'pyi_rth_pkgutil.py' from 'C:\\Users\\Lenovo\\AppData\\Roaming\\Python\\Python313\\site-packages\\PyInstaller\\hooks\\rthooks'
+25121 INFO: Creating base_library.zip...
+25142 INFO: Looking for dynamic libraries
+25370 INFO: Extra DLL search directories (AddDllDirectory): []
+25370 INFO: Extra DLL search directories (PATH): []
+26130 INFO: Warnings written to F:\001_Doing\HEU-PQC\chip_dual_demo\build\LC01_DualChip_Demo_v3\warn-LC01_DualChip_Demo_v3.txt
+26153 INFO: Graph cross-reference written to F:\001_Doing\HEU-PQC\chip_dual_demo\build\LC01_DualChip_Demo_v3\xref-LC01_DualChip_Demo_v3.html
+26180 INFO: checking PYZ
+26188 INFO: Building because F:\001_Doing\HEU-PQC\chip_dual_demo\text_crypto.py changed
+26188 INFO: Building PYZ (ZlibArchive) F:\001_Doing\HEU-PQC\chip_dual_demo\build\LC01_DualChip_Demo_v3\PYZ-00.pyz
+26439 INFO: Building PYZ (ZlibArchive) F:\001_Doing\HEU-PQC\chip_dual_demo\build\LC01_DualChip_Demo_v3\PYZ-00.pyz completed successfully.
+26463 INFO: checking PKG
+26469 INFO: Building because toc changed
+26469 INFO: Building PKG (CArchive) LC01_DualChip_Demo_v3.pkg
+30067 INFO: Building PKG (CArchive) LC01_DualChip_Demo_v3.pkg completed successfully.
+30083 INFO: Bootloader C:\Users\Lenovo\AppData\Roaming\Python\Python313\site-packages\PyInstaller\bootloader\Windows-64bit-intel\runw.exe
+30083 INFO: checking EXE
+30090 INFO: Building because toc changed
+30090 INFO: Building EXE from EXE-00.toc
+30091 INFO: Copying bootloader EXE to F:\001_Doing\HEU-PQC\chip_dual_demo\bin\LC01_DualChip_Demo_v3.exe
+30127 INFO: Copying icon to EXE
+30155 INFO: Copying 0 resources to EXE
+30155 INFO: Embedding manifest in EXE
+30184 INFO: Appending PKG archive to EXE
+30306 INFO: Fixing EXE headers
+30585 INFO: Building EXE from EXE-00.toc completed successfully.
+30600 INFO: Build complete! The results are available in: F:\001_Doing\HEU-PQC\chip_dual_demo\bin

@@ -185,7 +185,21 @@ class ChipClient:
     def initialize(self):
         self._command('开启时钟', CLOCK_COMMAND, expect_response=False)
         self._command('使能算法模块', frame(1, 3, secrets.token_bytes(16)))
-        self._command('配置算法', bytes.fromhex(self.profile.config_hex), ack=True)
+        self.configure_profile(self.profile)
+
+    def configure_profile(self, profile):
+        """Select a firmware algorithm profile on this already initialized chip."""
+        configure_transport = getattr(self.transport, 'configure_profile', None)
+        previous_profile = self.profile
+        if configure_transport is not None:
+            configure_transport(profile)
+        try:
+            self._command(f'配置算法: {profile.name}', bytes.fromhex(profile.config_hex), ack=True)
+        except Exception:
+            if configure_transport is not None:
+                configure_transport(previous_profile)
+            raise
+        self.profile = profile
 
     def generate_keypair(self):
         self._command('生成密钥', frame(2, 1), ack=True)
